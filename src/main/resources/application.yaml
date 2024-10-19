@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: online-library-backend
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/online_library_db}
+    username: postgres
+    password: postgres
+    hikari:
+      auto-commit: false
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+token:
+  signing:
+    key: "ZLgoOrgTsuLQO1gHwNwNa26k9UyBoEYxy4nZKv5DuOo="
