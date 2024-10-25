@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.dedov.onlinelibrary.service.RecommendationService;
 
-import java.io.IOException;
-
 /**
  * Контроллер для рекомендаций
  *
@@ -21,14 +19,14 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/v1/recommendation")
 @RequiredArgsConstructor
-@Tag(name = "Жанры")
+@Tag(name = "Рекомендованные книги")
 public class RecommendationController {
 
 	private final RecommendationService recommendationService;
 
 	@Operation(summary = "Получить рекомендованные книги")
 	@GetMapping("/list")
-	public ResponseEntity<?> listAllBooks() throws IOException {
-		return new ResponseEntity<>(recommendationService.recommendBooks(), HttpStatus.OK);
+	public ResponseEntity<?> listAllBooks() {
+		return new ResponseEntity<>(recommendationService.recommendBooksForUser(), HttpStatus.OK);
 	}
 }

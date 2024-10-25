@@ -32,7 +32,7 @@ public class Book {
 	@Column(nullable = false)
 	private String url;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 64556)
 	private String description;
 
 	// Связь с авторами (много авторов могут написать одну книгу)

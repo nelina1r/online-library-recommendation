@@ -24,4 +24,6 @@ public interface UserBookRatingRepository extends JpaRepository<UserBookRating, 
 	boolean existsByUserAndBook(User user, Book book);
 
 	List<UserBookRating> findUserBookRatingsByBook(Book book);
+
+	void deleteByUserAndBook(User user, Book book);
 }

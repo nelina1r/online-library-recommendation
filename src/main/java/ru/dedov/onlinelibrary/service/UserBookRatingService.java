@@ -3,6 +3,7 @@ package ru.dedov.onlinelibrary.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.dedov.onlinelibrary.dto.DeleteUserBookRatingRequest;
 import ru.dedov.onlinelibrary.dto.UserBookRatingRequest;
 import ru.dedov.onlinelibrary.model.entity.Book;
 import ru.dedov.onlinelibrary.model.entity.User;
@@ -35,5 +36,12 @@ public class UserBookRatingService {
 		userBookRating.setBook(book);
 		userBookRating.setRating(rating);
 		userBookRatingRepository.save(userBookRating);
+	}
+
+	@Transactional
+	public void deleteUserBookRating(DeleteUserBookRatingRequest request) {
+		Book book = bookService.getBookById(request.getBookId());
+		User currentUser = userService.getCurrentUser();
+		userBookRatingRepository.deleteByUserAndBook(currentUser, book);
 	}
 }

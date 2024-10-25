@@ -10,7 +10,7 @@ import ru.dedov.onlinelibrary.model.entity.UserBookRating;
 import ru.dedov.onlinelibrary.model.repository.BookRepository;
 import ru.dedov.onlinelibrary.model.repository.UserBookRatingRepository;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -58,5 +58,46 @@ public class BookService {
 
 	public Book getBookById(String id) {
 		return bookRepository.findById(id).orElseThrow();
+	}
+
+	// Метод для расчета TF-IDF для всех книг
+	public Map<String, Map<String, Double>> calculateTfIdfForBooks() {
+		List<Book> books = bookRepository.findAll();
+		List<String> allDocuments = books.stream()
+			.map(Book::getDescription)
+			.collect(Collectors.toList());
+
+		// Получаем уникальные слова из всех описаний
+		Set<String> uniqueWords = new HashSet<>();
+		for (String document : allDocuments) {
+			uniqueWords.addAll(Arrays.asList(document.toLowerCase().split("\\s+")));
+		}
+
+		// Карта, где ключ - ID книги, а значение - карта TF-IDF для каждого слова
+		Map<String, Map<String, Double>> tfidfMap = new HashMap<>();
+		for (Book book : books) {
+			String[] words = book.getDescription().toLowerCase().split("\\s+");
+			Map<String, Double> tfidfVector = new HashMap<>();
+
+			for (String word : uniqueWords) {
+				double tf = calculateTf(word, words);
+				double idf = calculateIdf(word, allDocuments);
+				tfidfVector.put(word, tf * idf);
+			}
+			tfidfMap.put(book.getId(), tfidfVector);
+		}
+		return tfidfMap;
+	}
+
+	// Расчет TF (term frequency)
+	private double calculateTf(String term, String[] words) {
+		long count = Arrays.stream(words).filter(word -> word.equals(term)).count();
+		return (double) count / words.length;
+	}
+
+	// Расчет IDF (inverse document frequency)
+	private double calculateIdf(String term, List<String> documents) {
+		long count = documents.stream().filter(doc -> Arrays.asList(doc.split("\\s+")).contains(term)).count();
+		return Math.log((double) documents.size() / (1 + count));
 	}
 }
